@@ -130,32 +130,7 @@ public class RouteInfo {
      *                      and at most maxStops edges
      */
     public static int stopBoundedRoutes(Integer[][] graph, int start, int destination, int minStops, int maxStops) {
-        // Sanity
-        if(minStops > maxStops) {
-            return 0;
-        }
-
-        int count = 0;
-
-        // If this is the destination and we've reached the minimum path length, count it
-        if (start == destination && minStops <= 0) {
-            count++;
-        }
-
-        // If we've hit the max path length, retreat
-        if (maxStops == 0) {
-            return count;
-        }
-
-        // Examine adjacent nodes
-        for (int v = 0; v < graph[start].length; v++) {
-            if (graph[start][v] != null) {
-                count += stopBoundedRoutes(graph, v, destination, minStops - 1, maxStops - 1);
-            }
-        }
-
-        // Retreat
-        return count;
+        return distanceBoundedRoutes(graph, start, destination, minStops, maxStops, true);
     }
 
     /**
@@ -171,14 +146,15 @@ public class RouteInfo {
      * @return              the number of paths from the start to the destination vertices where the sum of the edges
      *                      traversed is at least minDistance and at most maxDistance
      */
-    public static int distanceBoundedRoutes(Integer[][] graph, int start, int destination, int minDistance, int maxDistance) {
+    public static int distanceBoundedRoutes(
+            Integer[][] graph, int start, int destination, int minDistance, int maxDistance, boolean ignoreWeights) {
         // Sanity
         if(minDistance > maxDistance) {
             return 0;
         }
 
-        // If we've hit the max path weight, retreat
-        if (maxDistance <= 0) {
+        // If we're beyond the max path weight, retreat
+        if (maxDistance < 0) {
             return 0;
         }
 
@@ -192,8 +168,14 @@ public class RouteInfo {
         // Examine adjacent nodes
         for (int v = 0; v < graph[start].length; v++) {
             if (graph[start][v] != null) {
+                int subtrahend; // The word for the number being subtracted from the minuend.  Who knew?
+                if(ignoreWeights) {
+                    subtrahend = 1;
+                } else {
+                    subtrahend = graph[start][v];
+                }
                 count += distanceBoundedRoutes(
-                        graph, v, destination, minDistance - graph[start][v], maxDistance - graph[start][v]);
+                        graph, v, destination, minDistance - subtrahend, maxDistance - subtrahend, ignoreWeights);
             }
         }
 

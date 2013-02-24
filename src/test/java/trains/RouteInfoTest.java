@@ -141,7 +141,7 @@ public class RouteInfoTest {
      */
     @Test
     public void test10() {
-        int result = RouteInfo.distanceBoundedRoutes(testGraph, C, C, 1, 29);
+        int result = RouteInfo.distanceBoundedRoutes(testGraph, C, C, 1, 29, false);
         assertEquals("Incorrect result for no of routes C-C max distance 30", 7, result);
     }
 }
