@@ -1,21 +1,23 @@
 package trains;
 
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class RouteInformation {
 
     // Calculated predecessor tree
     private Integer[] predecessor;
-
     // Shortest path estimates from the source vertex
     private Integer[] estimate;
 
     /**
      * Implementation of Dijkstra's algorithm for calculating single-source shortest-path distances.
      *
-     * @param graph     adjacency matrix of input graph
-     * @param source    source vertex
+     * @param graph  adjacency matrix of input graph
+     * @param source source vertex
      */
     private void dijkstra(Integer[][] graph, int source) {
         predecessor = new Integer[graph.length];
@@ -46,13 +48,13 @@ public class RouteInformation {
 
             // Relax all adjacent vertices
             for (int v = 0; v < graph[u].length; v++) {
-                if(graph[u][v] != null) {
-                    if(u == source) {
+                if (graph[u][v] != null) {
+                    if (u == source) {
                         // This is a hack to accomodate that the shortest estimate from one vertex to itself cannot be 0
                         estimate[v] = graph[u][v];
                         predecessor[v] = u;
                         toDo.add(v);
-                    } else if(estimate[v] > estimate[u] + graph[u][v]){
+                    } else if (estimate[v] > estimate[u] + graph[u][v]) {
                         estimate[v] = estimate[u] + graph[u][v];
                         predecessor[v] = u;
                         toDo.add(v);
@@ -94,6 +96,16 @@ public class RouteInformation {
         return String.valueOf(routeLength);
     }
 
+    /**
+     * Calculates the length of the shortest path from the <code>source</code> vertex to the <code>destination</code>
+     * vertex in the specified directed weighted <code>graph</code>.
+     *
+     * @param graph         an adjacency matrix representing the input graph
+     * @param source        the source vertex
+     * @param destination   the destination vertex
+     * @return              the weight of the shortest path from <code>source</code> to <code>vertex</code> in
+     *                      <code>graph</code>
+     */
     public Integer shortestRouteLength(Integer[][] graph, int source, int destination) {
         dijkstra(graph, source);
         return estimate[destination];
@@ -105,14 +117,14 @@ public class RouteInformation {
     }
 
     public int numberOfRoutesWithExactLength(Integer[][] graph, int source, int destination, int stopCount) {
-
+        return 0;
     }
 
     private int countRoutes(Integer[][] graph, int u, int destination, int maxStops) {
         int count = 0;
 
         // If it's the destination then count it
-        if(u == destination) {
+        if (u == destination) {
             count++;
         }
 
@@ -122,8 +134,8 @@ public class RouteInformation {
         }
 
         // Examine adjacent nodes
-        for(int v=0; v<graph[u].length; v++) {
-            if(graph[u][v] != null) {
+        for (int v = 0; v < graph[u].length; v++) {
+            if (graph[u][v] != null) {
                 count += countRoutes(graph, v, destination, maxStops - 1);
             }
         }
