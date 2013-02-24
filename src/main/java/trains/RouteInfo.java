@@ -117,9 +117,8 @@ public class RouteInfo {
     }
 
     /**
-     * Calculates the number of paths in the specified directed weighted <code>graph</code> from the <code>start</code>
-     * vertex to the <code>destination</code> vertex that are at least <code>minStops</code> and at most
-     * <code>maxStops</code>.  This uses a depth-first approach.
+     * Wrapper for {@link RouteInfo#boundedPaths(Integer[][], int, int, int, int, boolean)} which bounds the lengths
+     * of routes to be counted by number of stops.
      *
      * @param graph         an adjacency matrix representing the input graph
      * @param start         the start vertex
@@ -130,7 +129,24 @@ public class RouteInfo {
      *                      and at most maxStops edges
      */
     public static int stopBoundedRoutes(Integer[][] graph, int start, int destination, int minStops, int maxStops) {
-        return distanceBoundedRoutes(graph, start, destination, minStops, maxStops, true);
+        return boundedPaths(graph, start, destination, minStops, maxStops, true);
+    }
+
+    /**
+     * Wrapper for {@link RouteInfo#boundedPaths(Integer[][], int, int, int, int, boolean)} which bounds the
+     * lengths of routes to be counted by distance travelled.
+     *
+     * @param graph         an adjacency matrix representing the input graph
+     * @param start         the start vertex
+     * @param destination   the destination vertex
+     * @param minDistance   the minimum path weight to consider
+     * @param maxDistance   the maximum path weight to consider
+     * @return              the number of paths from the start to the destination vertices where the sum of the edges
+     *                      traversed is at least minDistance and at most maxDistance
+     */
+    public static int distanceBoundedRoutes(
+            Integer[][] graph, int start, int destination, int minDistance, int maxDistance) {
+        return boundedPaths(graph, start, destination, minDistance, maxDistance, false);
     }
 
     /**
@@ -143,10 +159,12 @@ public class RouteInfo {
      * @param destination   the destination vertex
      * @param minDistance   the minimum path weight to consider
      * @param maxDistance   the maximum path weight to consider
+     * @param ignoreWeights a boolean indicating whether to count all edge weights as 1, which effectively makes the
+     *                      method bound the paths by number of edges instead of total weight
      * @return              the number of paths from the start to the destination vertices where the sum of the edges
      *                      traversed is at least minDistance and at most maxDistance
      */
-    public static int distanceBoundedRoutes(
+    public static int boundedPaths(
             Integer[][] graph, int start, int destination, int minDistance, int maxDistance, boolean ignoreWeights) {
         // Sanity
         if(minDistance > maxDistance) {
@@ -168,13 +186,9 @@ public class RouteInfo {
         // Examine adjacent nodes
         for (int v = 0; v < graph[start].length; v++) {
             if (graph[start][v] != null) {
-                int subtrahend; // The word for the number being subtracted from the minuend.  Who knew?
-                if(ignoreWeights) {
-                    subtrahend = 1;
-                } else {
-                    subtrahend = graph[start][v];
-                }
-                count += distanceBoundedRoutes(
+                // The word for the number being subtracted from the minuend.  Who knew?
+                int subtrahend = ignoreWeights ? 1 : graph[start][v];
+                count += boundedPaths(
                         graph, v, destination, minDistance - subtrahend, maxDistance - subtrahend, ignoreWeights);
             }
         }
