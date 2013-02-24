@@ -120,7 +120,8 @@ public class RouteInformationTest {
      */
     @Test
     public void test7() {
-
+        int result = routeInformation.numberOfRoutesWithExactLength(testGraph, A, C, 4);
+        assertEquals("Incorrect result for no of routes A-C length 4", 3, result);
     }
 
     /**

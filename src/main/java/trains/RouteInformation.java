@@ -15,6 +15,7 @@ public class RouteInformation {
 
     /**
      * Implementation of Dijkstra's algorithm for calculating single-source shortest-path distances.
+     * (see CLRS 2001, MIT, ch. 24)
      *
      * @param graph  adjacency matrix of input graph
      * @param source source vertex
@@ -65,7 +66,7 @@ public class RouteInformation {
     }
 
     /**
-     * "Relaxes" the shortest path estimate of edge (u, v). (see CLRS 2001, MIT, ch. 24)
+     * "Relaxes" the shortest path estimate of edge (u, v).
      *
      * @param u      the start vertex
      * @param v      the end vertex
@@ -112,19 +113,23 @@ public class RouteInformation {
     }
 
     public int numberOfRoutesWithMaxLength(Integer[][] graph, int source, int destination, int maxStops) {
-        // -1 because we exclude the 0-length route which will always be found
-        return countRoutes(graph, source, destination, maxStops) - 1;
+        return countRoutes(graph, source, destination, 1, maxStops);
     }
 
     public int numberOfRoutesWithExactLength(Integer[][] graph, int source, int destination, int stopCount) {
-        return 0;
+        return countRoutes(graph, source, destination, stopCount, stopCount);
     }
 
-    private int countRoutes(Integer[][] graph, int u, int destination, int maxStops) {
+    private int countRoutes(Integer[][] graph, int u, int destination, int minStops, int maxStops) {
+        // Sanity
+        if(minStops > maxStops) {
+            return 0;
+        }
+
         int count = 0;
 
-        // If it's the destination then count it
-        if (u == destination) {
+        // If this is the destination and we've reached the minimum path length, count it
+        if (u == destination && minStops <= 0) {
             count++;
         }
 
@@ -136,7 +141,7 @@ public class RouteInformation {
         // Examine adjacent nodes
         for (int v = 0; v < graph[u].length; v++) {
             if (graph[u][v] != null) {
-                count += countRoutes(graph, v, destination, maxStops - 1);
+                count += countRoutes(graph, v, destination, minStops - 1, maxStops - 1);
             }
         }
 
