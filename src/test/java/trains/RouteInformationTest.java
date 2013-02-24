@@ -8,7 +8,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-
 public class RouteInformationTest {
 
     // Vertex constants to make this more readable
@@ -107,11 +106,11 @@ public class RouteInformationTest {
     }
 
     /**
-     * 6. The number of trips starting at C and ending at C with a maximum of 3 stops.
+     * 6. The number of trips starting at C and ending at C with a maximum of 3 stops (and a minimum of 1).
      */
     @Test
     public void test6() {
-        int result = routeInformation.numberOfRoutesWithMaxLength(testGraph, C, C, 3);
+        int result = routeInformation.stopBoundedRoutes(testGraph, C, C, 1, 3);
         assertEquals("Incorrect result for no of routes C-C max length 3", 2, result);
     }
 
@@ -120,7 +119,7 @@ public class RouteInformationTest {
      */
     @Test
     public void test7() {
-        int result = routeInformation.numberOfRoutesWithExactLength(testGraph, A, C, 4);
+        int result = routeInformation.stopBoundedRoutes(testGraph, A, C, 4, 4);
         assertEquals("Incorrect result for no of routes A-C length 4", 3, result);
     }
 
@@ -129,8 +128,8 @@ public class RouteInformationTest {
      */
     @Test
     public void test8() {
-        int distance = routeInformation.shortestRouteLength(testGraph, A, C);
-        assertEquals("Incorrect result for shortest route length A-C", 9, distance);
+        int result = routeInformation.shortestRouteLength(testGraph, A, C);
+        assertEquals("Incorrect result for shortest route length A-C", 9, result);
     }
 
     /**
@@ -138,8 +137,8 @@ public class RouteInformationTest {
      */
     @Test
     public void test9() {
-        int distance = routeInformation.shortestRouteLength(testGraph, B, B);
-        assertEquals("Incorrect result for shortest route length A-C", 9, distance);
+        int result = routeInformation.shortestRouteLength(testGraph, B, B);
+        assertEquals("Incorrect result for shortest route length A-C", 9, result);
     }
 
     /**
@@ -147,6 +146,7 @@ public class RouteInformationTest {
      */
     @Test
     public void test10() {
-
+        int result = routeInformation.distanceBoundedRoutes(testGraph, C, C, 1, 29);
+        assertEquals("Incorrect result for no of routes C-C max distance 30", 7, result);
     }
 }
