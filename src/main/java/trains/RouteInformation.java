@@ -156,39 +156,32 @@ public class RouteInformation {
         return estimate[destination];
     }
 
-    int count = 0;
-    Stack<Integer> path = new Stack<>();
-
-    public Integer numberOfRoutesWithMaxLength(Integer[][] graph, int source, int destination, int maxLength) {
-        return countRoutes(graph, source, destination, maxLength);
+    public Integer numberOfRoutesWithMaxLength(Integer[][] graph, int source, int destination, int maxStops) {
+        // -1 because we exclude the 0-length route which will always be found
+        return countRoutes(graph, source, destination, maxStops) - 1;
     }
 
-    private int countRoutes(Integer[][] graph, int u, int destination, int maxLength) {
+    private int countRoutes(Integer[][] graph, int u, int destination, int maxStops) {
         int count = 0;
 
-        // Add this node to path
-        path.push(u);
-
-        // If it's the destination then count it, but not if we haven't visited any other vertices
-        if(u == destination && path.size() > 1) {
+        // If it's the destination then count it
+        if(u == destination) {
             count++;
         }
 
         // If we've hit the max path length, retreat
-        if (path.size() - 1 == maxLength) {
-            path.pop();
+        if (maxStops == 0) {
             return count;
         }
 
         // Examine adjacent nodes
         for(int v=0; v<graph[u].length; v++) {
             if(graph[u][v] != null) {
-                count += countRoutes(graph, v, destination, maxLength);
+                count += countRoutes(graph, v, destination, maxStops - 1);
             }
         }
 
         // Retreat
-        path.pop();
         return count;
     }
 
