@@ -57,6 +57,9 @@ public class RouteInfo {
      * Calculates the length of the shortest path from the <code>source</code> vertex to the <code>destination</code>
      * vertex in the specified directed weighted <code>graph</code>.
      *
+     * This method uses an implementation of Dijkstra's algorithm for calculating single-source shortest-path distances.
+     * Note that the predecessor tree is not recorded by this method, as it is not currently needed by this class.
+     *
      * @param graph         an adjacency matrix representing the input graph
      * @param source        the source vertex
      * @param destination   the destination vertex
@@ -64,18 +67,6 @@ public class RouteInfo {
      *                      <code>graph</code>
      */
     public static Integer shortestRouteLength(Integer[][] graph, int source, int destination) {
-        Integer[] estimate = dijkstra(graph, source);
-        return estimate[destination];
-    }
-
-    /**
-     * Implementation of Dijkstra's algorithm for calculating single-source shortest-path distances.  Note that the
-     * predecessor tree is not recorded by this method, as it is not currently needed by this class.
-     *
-     * @param graph  adjacency matrix of input graph
-     * @param source source vertex
-     */
-    private static Integer[] dijkstra(Integer[][] graph, int source) {
         final Integer[] estimate = new Integer[graph.length];
 
         // Set initial estimates to maximum
@@ -105,18 +96,24 @@ public class RouteInfo {
             for (int v = 0; v < graph[u].length; v++) {
                 if (graph[u][v] != null) {
                     if (u == source) {
-                        // This is a hack to accomodate that the shortest estimate from one vertex to itself cannot be 0
+                        // This is a hack to accomodate the requirement that the shortest distance from one vertex to
+                        // itself cannot be 0
                         estimate[v] = graph[u][v];
                         toDo.add(v);
                     } else if (estimate[v] > estimate[u] + graph[u][v]) {
                         // "Relax" the shortest path estimate
                         estimate[v] = estimate[u] + graph[u][v];
+                        // The shortest path estimate for each vertex is relaxed exactly once, so we can short-circuit
+                        // the algorithm and return once it has been calculated
+                        if(v == destination) {
+                            return estimate[v];
+                        }
                         toDo.add(v);
                     }
                 }
             }
         }
-        return estimate;
+        return null;
     }
 
     /**
@@ -163,8 +160,8 @@ public class RouteInfo {
 
     /**
      * Calculates the number of paths in the specified directed weighted <code>graph</code> from the <code>start</code>
-     * vertex to the <code>destination</code> vertex that are at least <code>minStops</code> and at most
-     * <code>maxStops</code>.  This uses a depth-first approach.
+     * vertex to the <code>destination</code> vertex whose weight is at least <code>minDistance</code> and at most
+     * <code>maxDistance</code>.  This uses a depth-first approach.
      *
      * @param graph         an adjacency matrix representing the input graph
      * @param start         the start vertex
@@ -175,6 +172,10 @@ public class RouteInfo {
      *                      traversed is at least minDistance and at most maxDistance
      */
     public static int distanceBoundedRoutes(Integer[][] graph, int start, int destination, int minDistance, int maxDistance) {
+        // Sanity
+        if(minDistance > maxDistance) {
+            return 0;
+        }
 
         // If we've hit the max path weight, retreat
         if (maxDistance <= 0) {
