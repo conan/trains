@@ -11,8 +11,8 @@ import java.util.Queue;
 public class RouteInfo {
 
     /**
-     * Calculates the distance covered in the specified directed weighted <code>graph</code> by following the specified
-     * <code>route</code>.
+     * Wrapper method for {@link RouteInfo#pathWeight(Integer[][], java.util.List)} that converts the output to a String
+     * and replaces a <code>null</code> result with the String "NO SUCH ROUTE".
      *
      * @param graph an adjacency matrix representing the input graph
      * @param route the route to follow
