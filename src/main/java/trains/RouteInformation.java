@@ -76,63 +76,6 @@ public class RouteInformation {
         }
     }
 
-    private void breadthFirstSearch(Integer[][] graph, int source, int destination) {
-        // Internal data structures
-        Queue<Integer> queue = new LinkedList<>();
-        Colour[] colour = new Colour[graph.length];
-
-        // Output
-        predecessor = new Integer[graph.length];
-        estimate = new Integer[graph.length];
-
-        for (int i = 0; i < graph.length; i++) {
-            colour[i] = Colour.WHITE;
-        }
-        colour[source] = Colour.GREY;
-        estimate[source] = 0;
-        queue.add(source);
-        while (!queue.isEmpty()) {
-            int u = queue.remove();
-            for (int v = 0; v < graph[u].length; v++) {
-                if(graph[u][v] != null) {
-                    if (v != u) {
-                        if (colour[v] == Colour.WHITE) {
-                            colour[v] = Colour.GREY;
-                            estimate[v] = estimate[u] + 1;
-                            predecessor[v] = u;
-                            queue.add(v);
-                        }
-                    }
-                    if (v == destination) {
-                        int p = v;
-                        Stack<Integer> path = new Stack<>();
-                        while (predecessor[p] != source) {
-                            path.push(p);
-                            p = predecessor[p];
-                        }
-                        while(!path.isEmpty()) {
-                            System.out.print(path.pop());
-                        }
-                        System.out.println("\n");
-                    }
-                }
-            }
-            colour[u] = Colour.BLACK;
-        }
-    }
-
-    /**
-     * Placeholder for marking vertices in BFS as the graph is explored:
-     * <ul>
-     * <li>WHITE: undiscovered</li>
-     * <li>GREY: discovered, some adjacent vertices not explored</li>
-     * <li>BLACK: discovered and all adjacent vertices explored</li>
-     * </ul>
-     */
-    private enum Colour {
-        WHITE, GREY, BLACK;
-    }
-
     public String distance(Integer[][] graph, List<Integer> route) {
         int routeLength = 0;
         for (int i = 0; i < route.size() - 1; i++) {
@@ -156,9 +99,13 @@ public class RouteInformation {
         return estimate[destination];
     }
 
-    public Integer numberOfRoutesWithMaxLength(Integer[][] graph, int source, int destination, int maxStops) {
+    public int numberOfRoutesWithMaxLength(Integer[][] graph, int source, int destination, int maxStops) {
         // -1 because we exclude the 0-length route which will always be found
         return countRoutes(graph, source, destination, maxStops) - 1;
+    }
+
+    public int numberOfRoutesWithExactLength(Integer[][] graph, int source, int destination, int stopCount) {
+
     }
 
     private int countRoutes(Integer[][] graph, int u, int destination, int maxStops) {
@@ -184,5 +131,4 @@ public class RouteInformation {
         // Retreat
         return count;
     }
-
 }
