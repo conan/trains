@@ -9,6 +9,9 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+/**
+ * @author Conan Cook (conan.cook@gmail.com)
+ */
 public class RouteInfoTest {
 
     // Vertex constants to make this more readable

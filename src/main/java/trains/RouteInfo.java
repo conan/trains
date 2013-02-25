@@ -7,6 +7,8 @@ import java.util.Queue;
 
 /**
  * Provides methods for calculating information about paths in graphs.
+ *
+ * @author Conan Cook (conan.cook@gmail.com)
  */
 public class RouteInfo {
 
