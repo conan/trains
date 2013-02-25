@@ -20,4 +20,11 @@ Algorithms
 
 Dijkstra's algorithm is a nice choice for single-source shortest-path calculations, and it can produce much more valuable output if needed; the implementation here is short-circuited to return when it's found the one route it's asked for, but it could easily store the predecessor tree which would give you all the shortest routes from the source; in a real application this could be used alongside a caching strategy.
 
+I read that Java's built-in PriorityQueue could be replaced with a Fibonnaci heap for a speedup because it's more efficient at fiddling the keys in the priority queue, but for a rail network it's always going to be a pretty sparse graph for financial reasons, so I didn't consider it worth implementing one.
+
 Breadth-First Search would seem like a more obvious choice for the bounded path counts because it naturally bounds its own path lengths as it progresses, but it's pretty similar to Dijkstra in the way it queues stuff up and what can I say, I love a recursion - it gives a really neat expression.  There's essentially no performance difference, especially with the fairly low upper bounds on how many train stations people in the world actually need.
+
+Architecture
+------------
+
+A bunch of static methods in a single class isn't ideal.  It's reasonable to think that there might be a need to change algorithms at some point, and a more modular approach would make sense.  The three different algorithms could be split out into separate classes or something, but given that this doesn't seem to be a component yet I didn't want to make assumptions about architecture, and it's nice and easy to read this way.
