@@ -10,7 +10,7 @@
 
     <properties>
         <!-- External dependencies -->
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
 
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
